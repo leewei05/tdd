@@ -1,13 +1,23 @@
 package main
 
+const (
+	englishHelloPrefix = "Hello, "
+	spanishHelloPrefix = "Hola, "
+	spanish            = "Spanish"
+)
+
 func main() {
-	Hello("Chris")
+	Hello("Chris", "")
 }
 
-func Hello(name string) string {
+func Hello(name, language string) string {
 	if name == "" {
 		name = "World"
 	}
 
-	return "Hello, " + name
+	if language == spanish {
+		return spanishHelloPrefix + name
+	}
+
+	return englishHelloPrefix + name
 }
