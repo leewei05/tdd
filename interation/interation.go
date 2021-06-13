@@ -1,9 +1,7 @@
 package interation
 
-const repeatedCount = 5
-
-func Repeat(character string) string {
-	res := ""
+func Repeat(character string, repeatedCount int) string {
+	var res string
 	for i := 0; i < repeatedCount; i++ {
 		res += character
 
