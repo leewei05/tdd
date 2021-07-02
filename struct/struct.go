@@ -11,6 +11,11 @@ type Rectangle struct {
 	Height float64
 }
 
+type Triangle struct {
+	Base   float64
+	Height float64
+}
+
 type Circle struct {
 	Radius float64
 }
@@ -24,4 +29,8 @@ func (r Rectangle) Area() (area float64) {
 }
 func (c Circle) Area() (area float64) {
 	return c.Radius * c.Radius * math.Pi
+}
+
+func (t Triangle) Area() (area float64) {
+	return (t.Base * t.Height) / 2
 }
