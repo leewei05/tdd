@@ -28,6 +28,10 @@ func (d Dictionary) Add(word, definition string) error {
 	return nil
 }
 
+func (d Dictionary) Update(word, newDefinition string) {
+	d[word] = newDefinition
+}
+
 func (e DictionaryErr) Error() string {
 	return string(e)
 }
