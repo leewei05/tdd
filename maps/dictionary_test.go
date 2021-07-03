@@ -3,9 +3,9 @@ package dictionary
 import "testing"
 
 func TestSearch(t *testing.T) {
-	dic := map[string]string{"test": "text context"}
+	dic := Dictionary{"test": "text context"}
 
-	got := Search(dic, "test")
+	got := dic.Search("test")
 	want := "text context"
 
 	assertStrings(t, got, want)
