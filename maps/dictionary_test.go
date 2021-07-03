@@ -8,6 +8,12 @@ func TestSearch(t *testing.T) {
 	got := Search(dic, "test")
 	want := "text context"
 
+	assertStrings(t, got, want)
+}
+
+func assertStrings(t testing.TB, got, want string) {
+	t.Helper()
+
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
 	}
