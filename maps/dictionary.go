@@ -1,11 +1,18 @@
 package dictionary
 
+import "errors"
+
 type Dictionary map[string]string
 
-func (d Dictionary) Search(key string) string {
-	if v, ok := d[key]; ok {
-		return v
+var (
+	ErrNotFound = errors.New("could not find the word you were looking for")
+)
+
+func (d Dictionary) Search(key string) (value string, err error) {
+	v, ok := d[key]
+	if !ok {
+		return "", ErrNotFound
 	}
 
-	return ""
+	return v, nil
 }
