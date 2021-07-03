@@ -20,12 +20,25 @@ func TestSearch(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	dic := Dictionary{}
-	word := "new"
-	definition := "This is a new word"
-	dic.Add(word, definition)
+	t.Run("new word", func(t *testing.T) {
+		dic := Dictionary{}
+		word := "new"
+		definition := "This is a new word"
+		err := dic.Add(word, definition)
 
-	assertDefinitions(t, dic, word, definition)
+		assertErrors(t, err, nil)
+		assertDefinitions(t, dic, word, definition)
+	})
+
+	t.Run("existing word", func(t *testing.T) {
+		word := "new"
+		definition := "This is a new word"
+		dic := Dictionary{word: definition}
+		err := dic.Add(word, definition)
+
+		assertErrors(t, err, ErrWordExists)
+		assertDefinitions(t, dic, word, definition)
+	})
 }
 
 func assertStrings(t testing.TB, got, want string) {
