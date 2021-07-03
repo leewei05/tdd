@@ -1,12 +1,12 @@
 package dictionary
 
-import "errors"
-
 type Dictionary map[string]string
 
+type DictionaryErr string
+
 var (
-	ErrNotFound   = errors.New("could not find the word you were looking for")
-	ErrWordExists = errors.New("word already exists")
+	ErrNotFound   = DictionaryErr("could not find the word you were looking for")
+	ErrWordExists = DictionaryErr("word already exists")
 )
 
 func (d Dictionary) Search(word string) (definition string, err error) {
@@ -26,4 +26,8 @@ func (d Dictionary) Add(word, definition string) error {
 
 	d[word] = definition
 	return nil
+}
+
+func (e DictionaryErr) Error() string {
+	return string(e)
 }
