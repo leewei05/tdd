@@ -1,4 +1,4 @@
-package mock
+package main
 
 import (
 	"bytes"
@@ -7,8 +7,9 @@ import (
 
 func TestCountdown(t *testing.T) {
 	buffer := &bytes.Buffer{}
+	spySleeper := &SpySleeper{}
 
-	Countdown(buffer)
+	Countdown(buffer, spySleeper)
 
 	got := buffer.String()
 	want := `3
@@ -18,5 +19,9 @@ Go!`
 
 	if got != want {
 		t.Errorf("got %q want %q", got, want)
+	}
+
+	if spySleeper.Calls != 4 {
+		t.Errorf("got %q want %q", spySleeper.Calls, 4)
 	}
 }
