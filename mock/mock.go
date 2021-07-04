@@ -3,12 +3,20 @@ package mock
 import (
 	"fmt"
 	"io"
+	"time"
+)
+
+var (
+	countdownStart = 3
+	finalWord      = "Go!"
 )
 
 func Countdown(out io.Writer) {
-	for i := 3; i > 0; i-- {
+	for i := countdownStart; i > 0; i-- {
+		time.Sleep(1 * time.Second)
 		fmt.Fprintln(out, i)
 	}
 
-	fmt.Fprint(out, "Go!")
+	time.Sleep(1 * time.Second)
+	fmt.Fprint(out, finalWord)
 }
