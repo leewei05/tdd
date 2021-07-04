@@ -7,7 +7,10 @@ import (
 	"time"
 )
 
-type DefaultSleeper struct{}
+type ConfigurableSleeper struct {
+	duration time.Duration
+	sleep    func(time.Duration)
+}
 
 type Sleeper interface {
 	Sleep()
@@ -19,7 +22,7 @@ var (
 )
 
 func main() {
-	sleeper := &DefaultSleeper{}
+	sleeper := &ConfigurableSleeper{1 * time.Second, time.Sleep}
 	Countdown(os.Stdout, sleeper)
 }
 
@@ -33,6 +36,6 @@ func Countdown(out io.Writer, spySleeper Sleeper) {
 	fmt.Fprint(out, finalWord)
 }
 
-func (s *DefaultSleeper) Sleep() {
-	time.Sleep(1 * time.Second)
+func (c *ConfigurableSleeper) Sleep() {
+	c.sleep(c.duration)
 }
