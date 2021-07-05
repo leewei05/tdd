@@ -2,23 +2,25 @@ package racer
 
 import (
 	"net/http"
-	"time"
 )
 
 func Racer(a, b string) string {
-	aDuration := measureResponseTime(a)
-	bDuration := measureResponseTime(b)
-
-	if aDuration > bDuration {
+	select {
+	case <-ping(a):
+		return a
+	case <-ping(b):
 		return b
 	}
-
-	return a
 }
 
-func measureResponseTime(url string) time.Duration {
-	startTime := time.Now()
-	http.Get(url)
+// chan struct{} is the smallest data type available from a memory perspective so we get no allocation versus a bool
+func ping(url string) chan struct{} {
+	ch := make(chan struct{})
 
-	return time.Since(startTime)
+	go func(u string) {
+		http.Get(u)
+		close(ch)
+	}(url)
+
+	return ch
 }
