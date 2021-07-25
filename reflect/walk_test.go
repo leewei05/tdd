@@ -93,20 +93,39 @@ func TestWalk(t *testing.T) {
 }
 
 func TestWalkMap(t *testing.T) {
-	t.Run("with maps", func(t *testing.T) {
-		aMap := map[string]string{
-			"Foo": "Bar",
-			"Baz": "Boz",
-		}
+	aMap := map[string]string{
+		"Foo": "Bar",
+		"Baz": "Boz",
+	}
 
-		var got []string
-		walk(aMap, func(input string) {
-			got = append(got, input)
-		})
-
-		assertContains(t, got, "Bar")
-		assertContains(t, got, "Boz")
+	var got []string
+	walk(aMap, func(input string) {
+		got = append(got, input)
 	})
+
+	assertContains(t, got, "Bar")
+	assertContains(t, got, "Boz")
+}
+
+func TestWalkChannel(t *testing.T) {
+	ch := make(chan Profile)
+
+	go func() {
+		ch <- Profile{33, "London"}
+		ch <- Profile{34, "Taiwan"}
+		close(ch)
+	}()
+
+	var got []string
+	want := []string{"London", "Taiwan"}
+
+	walk(ch, func(input string) {
+		got = append(got, input)
+	})
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v, want %v", got, want)
+	}
 }
 
 func assertContains(t testing.TB, mapSlice []string, value string) {
