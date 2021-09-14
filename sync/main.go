@@ -7,6 +7,10 @@ type Counter struct {
 	count int
 }
 
+func NewCounter() *Counter {
+	return &Counter{}
+}
+
 func (c *Counter) Inc() {
 	c.mu.Lock()
 	c.count++
