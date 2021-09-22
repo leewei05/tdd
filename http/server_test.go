@@ -24,7 +24,7 @@ func (s *StubPlayerStore) RecordWin(name string) {
 
 func TestGETLeague(t *testing.T) {
 	store := StubPlayerStore{}
-	server := &PlayerServer{&store}
+	server := NewPlayerServer(&store)
 
 	t.Run("it returns 200 on /league", func(t *testing.T) {
 		request, _ := http.NewRequest(http.MethodGet, "/league", nil)
@@ -45,7 +45,7 @@ func TestGETPlayers(t *testing.T) {
 	}
 
 	// needs to pass store as a pointer because GetPlayerScore is a pointer receiver
-	server := &PlayerServer{&store}
+	server := NewPlayerServer(&store)
 
 	t.Run("returns Lee's score", func(t *testing.T) {
 		request := newPlayerGETRequest("lee")
@@ -81,7 +81,7 @@ func TestStoreWins(t *testing.T) {
 	store := StubPlayerStore{
 		scores: map[string]int{},
 	}
-	server := &PlayerServer{&store}
+	server := NewPlayerServer(&store)
 	player := "lee"
 
 	t.Run("it returns accepted on POST", func(t *testing.T) {
