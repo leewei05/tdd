@@ -1,5 +1,9 @@
 package main
 
+import (
+	"io"
+)
+
 func NewInMemoryPlayerStore() *InMemoryPlayerStore {
 	return &InMemoryPlayerStore{map[string]int{}}
 }
@@ -21,6 +25,16 @@ func (i *InMemoryPlayerStore) GetLeague() []Player {
 	for name, wins := range i.store {
 		league = append(league, Player{name, wins})
 	}
+
+	return league
+}
+
+type FileSystemPlayerStore struct {
+	db io.Reader
+}
+
+func (f *FileSystemPlayerStore) GetLeague() []Player {
+	league, _ := NewLeague(f.db)
 
 	return league
 }
