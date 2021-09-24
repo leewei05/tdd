@@ -53,35 +53,6 @@ func TestLeague(t *testing.T) {
 	})
 }
 
-func newLeagueRequest() *http.Request {
-	request, _ := http.NewRequest(http.MethodGet, "/league", nil)
-	return request
-}
-
-func getLeagueListFromResponse(t testing.TB, body io.Reader) (league []Player) {
-	t.Helper()
-	err := json.NewDecoder(body).Decode(&league)
-	if err != nil {
-		t.Fatalf("Unable to parse response from server %q into slice of Player, '%v'", body, err)
-	}
-
-	return league
-}
-
-func assertLeague(t testing.TB, got, want []Player) {
-	t.Helper()
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v want %v", got, want)
-	}
-}
-
-func assertContentType(t testing.TB, response *httptest.ResponseRecorder, want string) {
-	t.Helper()
-	if response.Result().Header.Get("content-type") != want {
-		t.Errorf("response did not have content-type of %s, got %v", want, response.Result().Header)
-	}
-}
-
 func TestGETPlayers(t *testing.T) {
 	store := StubPlayerStore{
 		scores: map[string]int{
@@ -89,7 +60,6 @@ func TestGETPlayers(t *testing.T) {
 			"greg": 10,
 		},
 	}
-
 	// needs to pass store as a pointer because GetPlayerScore is a pointer receiver
 	server := NewPlayerServer(&store)
 
@@ -158,6 +128,21 @@ func newPlayerGETRequest(name string) *http.Request {
 	return request
 }
 
+func newLeagueRequest() *http.Request {
+	request, _ := http.NewRequest(http.MethodGet, "/league", nil)
+	return request
+}
+
+func getLeagueListFromResponse(t testing.TB, body io.Reader) (league []Player) {
+	t.Helper()
+	err := json.NewDecoder(body).Decode(&league)
+	if err != nil {
+		t.Fatalf("Unable to parse response from server %q into slice of Player, '%v'", body, err)
+	}
+
+	return league
+}
+
 func assertResponseBody(t testing.TB, got, want string) {
 	t.Helper()
 
@@ -171,5 +156,19 @@ func assertStatus(t testing.TB, got, want int) {
 
 	if got != want {
 		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func assertLeague(t testing.TB, got, want []Player) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
+	}
+}
+
+func assertContentType(t testing.TB, response *httptest.ResponseRecorder, want string) {
+	t.Helper()
+	if response.Result().Header.Get("content-type") != want {
+		t.Errorf("response did not have content-type of %s, got %v", want, response.Result().Header)
 	}
 }
