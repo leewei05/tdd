@@ -1,15 +1,18 @@
 package main
 
 import (
-	"strings"
+	"io"
+	"io/ioutil"
+	"os"
 	"testing"
 )
 
 func TestFileSystemStore(t *testing.T) {
 	t.Run("league from a reader", func(t *testing.T) {
-		database := strings.NewReader(`[
+		database, cleanDB := createTempFile(t, `[
             {"Name": "Cleo", "Wins": 10},
             {"Name": "Chris", "Wins": 33}]`)
+		defer cleanDB()
 
 		store := FileSystemPlayerStore{database}
 
@@ -27,9 +30,10 @@ func TestFileSystemStore(t *testing.T) {
 	})
 
 	t.Run("get player score", func(t *testing.T) {
-		database := strings.NewReader(`[
+		database, cleanDB := createTempFile(t, `[
         {"Name": "Cleo", "Wins": 10},
         {"Name": "Chris", "Wins": 33}]`)
+		defer cleanDB()
 
 		store := FileSystemPlayerStore{database}
 
@@ -37,6 +41,24 @@ func TestFileSystemStore(t *testing.T) {
 		want := 33
 		assertScore(t, got, want)
 	})
+}
+
+func createTempFile(t testing.TB, initialData string) (io.ReadWriteSeeker, func()) {
+	t.Helper()
+
+	tmpfile, err := ioutil.TempFile("", "db")
+	if err != nil {
+		t.Fatalf("could not create temp file %v", err)
+	}
+
+	tmpfile.Write([]byte(initialData))
+
+	removeFile := func() {
+		tmpfile.Close()
+		os.Remove(tmpfile.Name())
+	}
+
+	return tmpfile, removeFile
 }
 
 func assertScore(t testing.TB, got, want int) {
